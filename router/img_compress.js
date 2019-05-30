@@ -6,7 +6,7 @@ const router = express.Router();
 //返回相对尺寸的图片
 router.get('/:path/:type-:param', (req, res) => {
     let data = req.params;
-    let rootPath = '../../static/image';
+    let rootPath = '../../imageStorage';
     let fileName = data.type + '-' + data.param;
     console.log(fileName)
     let path_resplve = path.resolve(__dirname + '/' + rootPath + '/' + data.path + '/' + fileName);

@@ -29,12 +29,12 @@ server.use('/commodity', commodityRouter);
 
 
 //显示原图片
-server.use('/original', express.static('../static/image'));
+server.use('/original', express.static('../imageStorage'));
 server.use('/compress', imgCompress);
 //定时清理图片文件夹缓存
 setInterval(() => {
     console.log(new Date().getTime())
-    let tempPath = path.resolve(__dirname + '/../static/image/temporarySpace/');
+    let tempPath = path.resolve(__dirname + '/../imageStorage/temporarySpace/');
     if (!fs.existsSync(tempPath)) {
         fs.mkdirSync(tempPath)
     } else {
@@ -49,9 +49,9 @@ setInterval(() => {
 }, 1000 * 60 * 60)//1天1000*60*60*24
 
 // 返回原图
-console.log('返回原图', 'http://127.0.0.1:8989/original/img/image-517022.jpg')
+console.log('返回原图', 'http://127.0.0.1:3333/original/img/image-517022.jpg')
 //返回自定义尺寸图片
-console.log('返回自定义尺寸图片', 'http://127.0.0.1:8989/compress/img/image-517022.jpg')
+console.log('返回自定义尺寸图片', 'http://127.0.0.1:3333/compress/img/image-517022.jpg')
 
 
 
