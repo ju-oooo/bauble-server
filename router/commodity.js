@@ -30,9 +30,21 @@ router.post('/type', (req, res) => {
 
 //根据类型获取商品列表
 router.post('/list', (req, res) => {
-    let typeId = parseInt(req.body.typeId);
-    let sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity where typeId=?';
-    pool.query(sql, [typeId], (err, result) => {
+    let data = req.body;
+    console.log(req.body)
+    let typeId = parseInt(data.typeId);
+    //页码
+    let pageCount = parseInt(data.pageCount);
+    //一页显示条数
+    let count = parseInt(data.count);
+    if (!pageCount) {
+        pageCount = 1
+    }
+    if (!count) {
+        count = 20
+    }
+    let sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity where typeId=? limit ?,?';
+    pool.query(sql, [typeId, (pageCount - 1) * count, pageCount * count], (err, result) => {
         if (err) throw err;
         if (result.length > 0) {
             res.send({'code': 1, result: result});
@@ -41,6 +53,7 @@ router.post('/list', (req, res) => {
         }
     });
 });
+
 //根据商品ID 获取商品详情
 router.post('/details', (req, res) => {
     let commodityId = parseInt(req.body.commodityId);
@@ -54,4 +67,5 @@ router.post('/details', (req, res) => {
         }
     });
 });
+
 module.exports = router;

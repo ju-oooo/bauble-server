@@ -14,8 +14,9 @@ const server = express();
 server.listen(3333);
 //解决跨域请求
 server.use(cors({
-    origin: '*'
-}))
+    origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
+    credentials: true
+}));
 // server.all("*", (req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', "*");
 //     next();
@@ -46,7 +47,7 @@ setInterval(() => {
             }
         }
     }
-}, 1000 * 60 * 60)//1天1000*60*60*24
+}, 1000 * 60)//1天1000*60*60*24
 
 // 返回原图
 console.log('返回原图', 'http://127.0.0.1:3333/original/img/image-517022.jpg')
