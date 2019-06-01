@@ -22,7 +22,6 @@ server.use(cors({
 //     next();
 // });
 server.use(bodyParser.urlencoded({extended: false}));
-
 server.use('/user', userRouter);
 server.use('/image', imageRouter);
 server.use('/book', bookRouter);
