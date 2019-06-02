@@ -1,26 +1,40 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const fs = require('fs');
 const path = require('path');
-const imgCompress = require('./router/img_compress');
-const userRouter = require('./router/user');
+const fs = require('fs');
 const imageRouter = require('./router/image');
+const imageToolsRouter = require('./router/image_tools');
+const userRouter = require('./router/user');
 const bookRouter = require('./router/book');
 const commodityRouter = require('./router/commodity');
 
 const server = express();
 
 server.listen(3333);
-//解决跨域请求
+// //解决跨域请求
+// server.use('*',function (req, res, next) {
+//     res.header('Access-Control-Allow-Origin', 'http://localhost:3666'); //这个表示任意域名都可以访问，这样写不能携带cookie了。
+// //res.header('Access-Control-Allow-Origin', 'http://www.baidu.com'); //这样写，只有www.baidu.com 可以访问。
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+//     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');//设置方法
+//     if (req.method == 'OPTIONS') {
+//         res.send(200); // 意思是，在正常的请求之前，会发送一个验证，是否可以请求。
+//     }
+//     else {
+//         next();
+//     }
+// });
 server.use(cors({
-    origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
-    credentials: true
+    origin: ['http://127.0.0.1:3666','http://localhost:3666'],
+    optionsSuccessStatus: 200
 }));
 // server.all("*", (req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', "*");
 //     next();
 // });
+
+
 server.use(bodyParser.urlencoded({extended: false}));
 
 server.use('/user', userRouter);
@@ -28,11 +42,8 @@ server.use('/image', imageRouter);
 server.use('/book', bookRouter);
 server.use('/commodity', commodityRouter);
 
-
 //显示原图片
-server.use('/original', express.static('../imageStorage'));
-server.use('/compress', imgCompress);
-//定时清理图片文件夹缓存
+server.use(imageToolsRouter)
 setInterval(() => {
     console.log(new Date().getTime())
     let tempPath = path.resolve(__dirname + '/../imageStorage/temporarySpace/');
@@ -49,10 +60,8 @@ setInterval(() => {
     }
 }, 1000 * 60)//1天1000*60*60*24
 
-// 返回原图
-console.log('返回原图', 'http://127.0.0.1:3333/original/img/image-517022.jpg')
-//返回自定义尺寸图片
-console.log('返回自定义尺寸图片', 'http://127.0.0.1:3333/compress/img/image-517022.jpg')
+console.log('http://127.0.0.1:3333/original/image/image-517022.jpg')
+console.log('http://127.0.0.1:3333/compress/image/image-517022.jpg')
 
 
 

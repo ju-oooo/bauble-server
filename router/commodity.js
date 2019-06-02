@@ -31,7 +31,6 @@ router.post('/type', (req, res) => {
 //根据类型获取商品列表
 router.post('/list', (req, res) => {
     let data = req.body;
-    console.log(req.body)
     let typeId = parseInt(data.typeId);
     //页码
     let pageCount = parseInt(data.pageCount);

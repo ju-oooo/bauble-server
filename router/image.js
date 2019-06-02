@@ -26,7 +26,6 @@ router.get('/detail', (req, res) => {
     let data = req.query;
     if (!data.uid) {
         res.redirect('../error/404.html')
-        return;
     } else {
         console.log(33)
     }
