@@ -3,6 +3,7 @@ const express = require('express');
 const pool = require('../pool');
 const router = express.Router();
 
+
 //获取商品总类型
 router.post('/type', (req, res) => {
     let sql = 'select `id`, `name` from commodity_catalogue';
