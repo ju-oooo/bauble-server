@@ -12,9 +12,9 @@ router.post('/type', (req, res) => {
         if (err) throw err;
         if (result.length > 0) {
             //获取商品更多类型
+            data.catalogue = result;
             let sql = 'select `id`, `name`,`catalogueId` from commodity_type';
             pool.query(sql, (err, result) => {
-                data.catalogue = result;
                 if (err) throw err;
                 if (result.length > 0) {
                     data.type = result;

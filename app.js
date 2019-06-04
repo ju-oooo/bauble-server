@@ -59,7 +59,7 @@ setInterval(() => {
             }
         }
     }
-}, 1000 * 60)//1天1000*60*60*24
+}, 1000 * 60*10)//1天1000*60*60*24
 
 console.log('http://127.0.0.1:3333/original/image/image-517022.jpg')
 console.log('http://127.0.0.1:3333/compress/image/image-517022.jpg')
