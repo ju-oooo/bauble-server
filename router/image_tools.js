@@ -10,6 +10,7 @@ router.get('/original/:path/:type-:param', (req, res) => {
     let data = req.params;
     let fileName = data.type + '-' + data.param;
     let path_resplve = path.resolve(__dirname + '/' + rootPath + '/' + data.path + '/' + fileName);
+    console.log(path_resplve)
     //如果有直接返回
     if (fs.existsSync(path_resplve)) {//图片列表查找
         res.sendFile(path_resplve)
