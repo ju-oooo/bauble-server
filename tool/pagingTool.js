@@ -9,7 +9,7 @@
 let pagingTool = function (count, pageNum, defCount) {
     count = parseInt(count);
     pageNum = parseInt(pageNum);
-    if ((isNaN(count) || count < defCount) && (isNaN(pageNum) || pageNum < 1)) {
+    if ((isNaN(count) || count < defCount) || (isNaN(pageNum) || pageNum < 1)) {
         count = defCount;
         pageNum = 1;
     }
