@@ -59,7 +59,7 @@ router.post('/details', (req, res) => {
     try {
         pool.query(sql, [commodityId], (err, result) => {
             if (result.length > 0) {
-                res.send({'code': 200, result: result});
+                res.send({'code': 200, result: result[0]});
             }
         });
     } catch (e) {
