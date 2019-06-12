@@ -29,14 +29,20 @@ router.post('/type', (req, res) => {
 });
 
 /**
- * 首页随机商品列表
+ * 随机商品列表
  * 参数 count 一页显示的条数 pageNum 页码
  */
 
 router.post('/', (req, res) => {
     let data = req.body;
+    let typeId = data.typeId;
+    let sql;
+    if (!typeId) {
+        sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity ORDER BY RAND() limit ?,?';
+    } else {
+        sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity where typeId in (' + typeId + ') ORDER BY RAND() limit ?,?';
+    }
     let pageParam = pagingTool(data.count, data.pageNum, 20);
-    let sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity limit ?,?';
     try {
         pool.query(sql, [pageParam.start, pageParam.end], (err, result) => {
             if (result.length > 0) {
@@ -65,7 +71,6 @@ router.post('/list', (req, res) => {
                 res.send({'code': 200, result: result});
             } else {
                 res.send({'code': 404, msg: "暂无此数据"});
-
             }
         });
     } catch (e) {

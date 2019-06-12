@@ -13,7 +13,8 @@ const server = express();
 
 server.listen(3333);
 server.use(cors({
-    origin: ['http://127.0.0.1:3666', 'http://localhost:3666'],
+    // origin: ['http://127.0.0.1:3666', 'http://localhost:3666'],
+    origin: '*',
     credentials: true,
     optionsSuccessStatus: 200
 }));
