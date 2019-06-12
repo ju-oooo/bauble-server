@@ -29,6 +29,27 @@ router.post('/type', (req, res) => {
 });
 
 /**
+ * 首页随机商品列表
+ * 参数 count 一页显示的条数 pageNum 页码
+ */
+
+router.post('/', (req, res) => {
+    let data = req.body;
+    let pageParam = pagingTool(data.count, data.pageNum, 20);
+    let sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity limit ?,?';
+    try {
+        pool.query(sql, [pageParam.start, pageParam.end], (err, result) => {
+            if (result.length > 0) {
+                res.send({'code': 200, result: result});
+            } else {
+                res.send({'code': 404, msg: "暂无此数据"});
+            }
+        });
+    } catch (e) {
+        res.send({code: 500, msg: '服务器内部错误'})
+    }
+});
+/**
  * 根据多个类型获取商品列表
  * 参数 count 一页显示的条数 pageNum 页码 typeId 类型ID
  */
