@@ -65,6 +65,7 @@ router.post('/list', (req, res) => {
                 res.send({'code': 200, result: result});
             } else {
                 res.send({'code': 404, msg: "暂无此数据"});
+
             }
         });
     } catch (e) {
@@ -80,7 +81,7 @@ router.post('/details', (req, res) => {
     try {
         pool.query(sql, [commodityId], (err, result) => {
             if (result.length > 0) {
-                res.send({'code': 200, result: result});
+                res.send({'code': 200, result: result[0]});
             }
         });
     } catch (e) {
