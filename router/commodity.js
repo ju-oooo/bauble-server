@@ -82,15 +82,27 @@ router.post('/list', (req, res) => {
 router.post('/details', (req, res) => {
     let data = req.body;
     let commodityId = parseInt(data.commodityId);
+    let sendData = {};
     let sql = 'select `id`, `typeId`,`title`, `price`, `image`,`details`,`realLink` from commodity where id=?';
     try {
         pool.query(sql, [commodityId], (err, result) => {
             if (result.length > 0) {
-                res.send({'code': 200, result: result[0]});
+                sendData.details = result[0];
+                sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity where typeId = ? ORDER BY RAND() limit 0,4';
+                try {
+                    pool.query(sql, [sendData.details.typeId], (err, result) => {
+                        if (result.length > 0) {
+                            sendData.hotCommodityList = result;
+                            res.send({'code': 200, details: sendData.details, hotCommodityList: sendData.hotCommodityList});
+                        }
+                    });
+                } catch (e) {
+                    res.send({code: 500, msg: '服务器内部错误'});
+                }
             }
         });
     } catch (e) {
-        res.send({code: 500, msg: '服务器内部错误'})
+        res.send({code: 500, msg: '服务器内部错误'});
     }
 });
 
