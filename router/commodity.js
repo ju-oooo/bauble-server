@@ -85,4 +85,5 @@ router.post('/details', (req, res) => {
     }
 });
 
+router.post('/shoppingCart',(req,res)=>{})
 module.exports = router;
