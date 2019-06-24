@@ -4,7 +4,7 @@ let pool = mysql.createPool({
     port: 3306,
     user: 'root',
     password: '',
-    database: 'bauble',
+    database: 'bauble_commodity',
     connectionLimit: 15,
     // debug:true
 });
