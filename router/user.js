@@ -9,18 +9,19 @@ router.post('/login', (req, res) => {
     let data = req.body;
     //验证数据是否正确
     data = userTool.validateLogin(data);
+
     if (data.msg === 'success') {
         let sql = `select * from user where ${data.type}=? and password=?`;
         pool.query(sql, [data.username, data.password], (err, result) => {
             if (err) throw err;
             if (result.length > 0) {
-                res.send({code: 200,msg: '登陆成功'})
+                res.send({code: 200, msg: '登陆成功'})
             } else {
-                res.send({code: 500,msg: '账号或密码错误'})
+                res.send({code: 500, msg: '账号或密码错误'})
             }
         })
     } else {
-        res.send({code: 500,msg: data.msg})
+        res.send({code: 500, msg: data.msg})
     }
 });
 //注册
@@ -29,12 +30,16 @@ router.post('/register', (req, res) => {
     let data = req.body;
     //验证数据是否正确
     data = userTool.validateRegister(data);
+    console.log(data)
     if (data.msg === 'success') {
-        let sql = `insert into user (username,password,${data.type})value(?,?,?)`;
+        let sql = `insert into user (username,password,${data.type})value(?,md5(?),?)`;
         pool.query(sql, [data.username, data.password, data.typeValue], (err, result) => {
             try {
                 if (result.affectedRows > 0) {
-                    res.send({code: 200, msg: '注册成功'})
+                    userInfo = {
+                        username: data.username
+                    }
+                    res.send({code: 200, msg: '注册成功', userInfo})
                 } else {
                     res.send({code: 201, msg: '注册失败'})
                 }
@@ -43,11 +48,10 @@ router.post('/register', (req, res) => {
             }
         })
     } else {
-        res.send({code: 500, msg: '服务器内部错误'})
+        res.send({code: 500, msg: data.msg})
     }
-
-
 });
+
 //验证用户名是否存在
 router.post('/findUsername', (req, res) => {
     let data = req.body;

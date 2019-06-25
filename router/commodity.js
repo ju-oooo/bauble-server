@@ -73,7 +73,7 @@ router.post('/details', (req, res) => {
                         if (result.length > 0) {
                             sendData.hotCommodityList = result;
                             res.send({
-                                'code': 200,
+                                code: 200,
                                 details: sendData.details,
                                 hotCommodityList: sendData.hotCommodityList
                             });
