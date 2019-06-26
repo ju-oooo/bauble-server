@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
@@ -22,6 +23,12 @@ server.use(cors({
 //     res.header('Access-Control-Allow-Origin', "*");
 //     next();
 // });
+// server.use(session({
+//     secret: 'oooo',//加密的字符串，里面内容可以随便写
+//     resave: false,//强制保存session,即使它没变化
+//     saveUninitialized: true //强制将未初始化的session存储，默认为true
+// }))
+
 
 server.use(bodyParser.urlencoded({extended: false}));
 
@@ -46,7 +53,7 @@ setInterval(() => {
             }
         }
     }
-}, 1000 * 60*10)//1天1000*60*60*24
+}, 1000 * 60 * 10)//1天1000*60*60*24
 //原图
 console.log('http://127.0.0.1:3333/original/image/image-517022.jpg')
 //裁剪图

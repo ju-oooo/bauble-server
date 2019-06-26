@@ -125,7 +125,7 @@ router.post('/favorite', (req, res) => {
 router.post('addFavorite', (req, res) => {
     let data = req.body;
     let userId = data.userId;
-    let sql = `insert into user (commodityId,userId,time) values (?,?,?)`;
+    let sql = `insert into commodity_favorite (commodityId,userId,time) values (?,?,?)`;
     pool.query(sql, [data.commodityId, data.userId, new Date().getTime()], (err, result) => {
         if (result.affectedRows > 0) {
             res.send({code: 200, msg: '注册成功'})
