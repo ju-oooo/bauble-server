@@ -60,9 +60,13 @@ router.post('/', (req, res) => {
 //根据商品ID 获取商品详情
 router.post('/details', (req, res) => {
     let data = req.body;
+    console.log(data.userId)
     let commodityId = parseInt(data.commodityId);
     let sendData = {};
     let sql = 'select `id`, `typeId`,`title`, `price`, `image`,`details`,`realLink` from commodity where id=?';
+    if (data.userId) {
+        sql = `select id ,(select count(id) from commodity_favorite where commodityId=${commodityId} and userId=${data.userId}) favorite,typeId,title, price, image,details,realLink from commodity where id=?`;
+    }
     try {
         pool.query(sql, [commodityId], (err, result) => {
             if (result.length > 0) {
@@ -92,22 +96,21 @@ router.post('/details', (req, res) => {
 //根据session中的userId获取收藏夹列表
 router.post('/favorite', (req, res) => {
     let data = req.body;
-    let userId = parseInt(data.userId);
     let sendData = {};
     //select f.id favoriteId, c.typeId,title, c.price, c.image,c.details,c.realLink from commodity c join commodity_favorite f on c.id = f.commodityId where userId=1;
-    let sql = 'select f.id favoriteId, c.typeId,title, c.price, c.image,c.details,c.realLink from commodity c join commodity_favorite f on c.id = f.commodityId where userId=?';
+    let sql = 'select f.id favoriteId, c.id, c.typeId,title, c.price, c.image,c.details,c.realLink from commodity c join commodity_favorite f on c.id = f.commodityId where userId=?';
     try {
-        pool.query(sql, [userId], (err, result) => {
+        pool.query(sql, [data.userId], (err, result) => {
             if (result.length > 0) {
-                sendData.details = result[0];
+                sendData.favoriteList = result;
                 sql = 'select `id`, `typeId`,`title`, `price`, `image` from commodity where typeId in (?) ORDER BY RAND() limit 0,4';
                 try {
-                    pool.query(sql, [sendData.details.typeId], (err, result) => {
+                    pool.query(sql, [sendData.favoriteList[0].typeId], (err, result) => {
                         if (result.length > 0) {
                             sendData.hotCommodityList = result;
                             res.send({
                                 'code': 200,
-                                details: sendData.details,
+                                favoriteList: sendData.favoriteList,
                                 hotCommodityList: sendData.hotCommodityList
                             });
                         }
@@ -122,16 +125,35 @@ router.post('/favorite', (req, res) => {
     }
 });
 
-router.post('addFavorite', (req, res) => {
+router.post('/addFavorite', (req, res) => {
     let data = req.body;
-    let userId = data.userId;
     let sql = `insert into commodity_favorite (commodityId,userId,time) values (?,?,?)`;
-    pool.query(sql, [data.commodityId, data.userId, new Date().getTime()], (err, result) => {
-        if (result.affectedRows > 0) {
-            res.send({code: 200, msg: '注册成功'})
-        } else {
-            res.send({code: 201, msg: '注册失败'})
-        }
-    })
+    try {
+        pool.query(sql, [data.commodityId, data.userId, data.time], (err, result) => {
+            if (result.affectedRows > 0) {
+                res.send({code: 200, msg: '收藏成功'})
+            } else {
+                res.send({code: 201, msg: '收藏失败'})
+            }
+        })
+    } catch (e) {
+        res.send({code: 500, msg: '服务器内部错误'});
+    }
+})
+
+router.post('/removeFavorite', (req, res) => {
+    let data = req.body;
+    let sql = `delete from commodity_favorite where commodityId=? and userId=?`;
+    try {
+        pool.query(sql, [data.commodityId, data.userId], (err, result) => {
+            if (result.affectedRows > 0) {
+                res.send({code: 200, msg: '取消收藏'})
+            } else {
+                res.send({code: 201, msg: '取消失败'})
+            }
+        })
+    } catch (e) {
+        res.send({code: 500, msg: '服务器内部错误'});
+    }
 })
 module.exports = router;
